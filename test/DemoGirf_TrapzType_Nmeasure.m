@@ -33,8 +33,8 @@ tIn = (0:dtIn:50e-3)';
 N = 20;
 format long;     % 15位小数
 for i=1:N
-    A = 10-2.0/N*(i*1);
-    slope = A/(10 / 0.1e-3) ;
+    A = 30-15.0/N*(i*1); % 30mT/m-15mT/m
+    slope = A/(30 / 300e-6) ; % SR 100mT/m/ms (0-30mT/m 300us)
     plateau = 0;
     tStart = 5.1e-3 - slope;
     slope
@@ -75,7 +75,7 @@ outK = outK + 1e-8*randn(size(outK));
 out = [zeros(1,length(outBasis),size(in,3)); diff(outK)/dtOut];
 
 % ====== 新增：将out向后延迟80us ======
-delayPoints = 80e-6/1e-6;
+delayPoints = 80e-6/dtIn;
 % 创建延迟后的输出数组
 delayedOut = zeros(size(out));
 % 检查是否有足够的点来延迟
