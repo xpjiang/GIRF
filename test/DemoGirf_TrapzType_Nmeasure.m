@@ -73,6 +73,24 @@ out(:,2,:) = selfOut; % x
 outK = dtOut*cumsum(out);
 outK = outK + 1e-8*randn(size(outK));
 out = [zeros(1,length(outBasis),size(in,3)); diff(outK)/dtOut];
+
+% ====== 新增：将out向后延迟80us ======
+delayPoints = 80e-6/1e-6;
+% 创建延迟后的输出数组
+delayedOut = zeros(size(out));
+% 检查是否有足够的点来延迟
+if size(out, 1) > delayPoints
+    % 前delayPoints个点置为0
+    delayedOut(1:delayPoints, :, :) = 0;
+    % 后面的点用原始信号填充（延迟）
+    delayedOut(delayPoints+1:end, :, :) = out(1:end-delayPoints, :, :);
+else
+    warning('信号长度不足以实现100点延迟！');
+    delayedOut = out; % 如果信号太短，保持原样
+end
+
+% 使用延迟后的信号
+out = delayedOut;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Compute GIRF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
